@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>For You</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Background Canvas -->
+  <canvas id="bg"></canvas>
+
+  <!-- Tap-to-start overlay (for iPhone audio permissions) -->
+  <div id="startOverlay" class="overlay">
+    <div class="overlay-card">
+      <h1>Assalamu alaikum ❤️</h1>
+      <p>I made a little journey for you. Scroll when you’re ready.</p>
+      <button id="startBtn">Tap to start this journey</button>
+      <p class="tiny">Music will start after you tap.</p>
+    </div>
+  </div>
+
+  <!-- Scroll hint (shows for ~3 seconds after start) -->
+  <div id="scrollHint" class="scroll-hint" aria-hidden="true">Scroll ↓</div>
+
+  <!-- Audio Controls -->
+  <div class="hud">
+    <button id="muteBtn" aria-label="Mute/unmute">🔊</button>
+    <button id="voiceBtn" aria-label="Play voice">🎙️</button>
+  </div>
+
+  <!-- Foreground “pages” -->
+  <main id="pages">
+    <section class="page">
+      <h2>Assalamu alaikum ya habibti</h2>
+      <p>
+        I made this little journey for you… because you’ve been on my mind in the quiet moments,
+        and I wanted you to <em>feel</em> how much you mean to me.
+        Scroll slowly — I built this like a story, one step at a time. 💛
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>I thank Allah for sending you to me</h2>
+      <p>
+        Sometimes I just sit there and think… “Ya Allah, how did I get someone like her?”
+        You’re not random in my life. You’re a gift.
+        And I never want to treat you like something ordinary, because you’re not.
+      </p>
+    </section>
+
+    <!-- ✅ NEW: Salams + the first pull -->
+    <section class="page">
+      <h2>It started on Salams</h2>
+      <p>
+        We matched on Salams… and I still remember how you caught my eye immediately.
+        Not just your looks — you felt real.
+        Like you weren’t trying to impress anyone. Like you were just being you.
+      </p>
+      <p>
+        And I’m being honest… I didn’t match with anyone else.
+        Something in my heart was telling me to talk to you.
+        Like Allah was quietly pushing me toward you.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>At first… I had thoughts and worries</h2>
+      <p>
+        In the beginning, I had questions in my head.
+        Not because of you as a person — but because of how serious marriage is.
+        I didn’t want to be careless with someone’s heart, and I didn’t want to be careless with my own.
+      </p>
+      <p>
+        You were honest with me about parts of your life… and I respected that.
+        It made me pause for a moment — not in judgment —
+        but in that serious way where you think: “Can I be the man she deserves?”
+        And “Can I carry this with mercy, not ego?”
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>What made me stay anyway</h2>
+      <p>
+        Even with those thoughts… I couldn’t ignore what I felt when I spoke to you.
+        Your heart felt soft. Your intentions felt clean.
+        And the more I learned you, the more I realized:
+        you weren’t asking for perfection — you were asking for sincerity.
+      </p>
+      <p>
+        That’s why I stayed.
+        Because you felt like someone I could build with the right way.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>When it started feeling real</h2>
+      <p>
+        The moment you decided to FaceTime me…
+        and I felt you actually taking me seriously…
+        that’s when something shifted in me.
+      </p>
+      <p>
+        I remember thinking:
+        “Okay… she’s not playing around.”
+        And that’s when I first started thinking you might actually be the one.
+      </p>
+    </section>
+
+    <!-- ✅ Timeline start -->
+    <section class="page">
+      <h2>December 18, 2025 — the beginning</h2>
+      <p>
+        That day we first started talking… and I swear, it didn’t feel like “just a conversation.”
+        It felt like something was opening in my life — like Allah was quietly writing a new chapter for me.
+        I didn’t know how deep it would go yet… but I remember how natural it felt.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>The days after…</h2>
+      <p>
+        The more we talked, the more I caught myself smiling for no reason.
+        I’d read your messages and feel my chest get warm.
+        It wasn’t just attraction — it was peace. Like you were becoming a safe place for my heart.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>December 24, 2025 — I said “I love you”</h2>
+      <p>
+        I still remember that feeling — that moment where it stopped being something I was “thinking”…
+        and it became something I knew.
+        I said I love you, and I meant it with sincerity, not for fun, not as a game.
+        I meant it like a promise: that I will be serious with your heart.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>And after that… I wrote you everywhere</h2>
+      <p>
+        I wrote so much about you — in my journals, in my thoughts, in that letter to my future wife…
+        and it kept coming back to the same thing:
+        you made me want to do things the right way.
+        You made me want halal love — clean love — love with barakah.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>January 9, 2026 — the first time I met you</h2>
+      <p>
+        I met you in person for the first time, and I remember how I had to stay calm on the outside…
+        but inside, I was honestly shocked by how beautiful and sweet you were.
+        Your brother and your sister-in-law were there, so I kept myself respectful.
+      </p>
+      <p>
+        I was glancing at you when I thought your brother wouldn’t notice — not in a bad way…
+        just in that quiet way where you can’t help but admire someone.
+        And you thought I wasn’t into you because I didn’t speak much…
+        but the truth is: I was trying to do everything the right way.
+      </p>
+    </section>
+
+    <!-- ✅ NEW: The parking lot moment + gifts + “Hiiiii” -->
+    <section class="page">
+      <h2>That moment after dinner… I still remember it</h2>
+      <p>
+        When we were done eating, we walked back to our cars.
+        And you gave me the gifts you prepared for me.
+        I remember holding them and thinking:
+        “SubhanAllah… she really did this for me.”
+      </p>
+      <p>
+        I waited for you to get into your car, and I didn’t want to leave.
+        I just stood there, wanting to stay in that moment a little longer.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>And then you said it</h2>
+      <p>
+        You finally had the courage to speak and you hit me with your signature:
+        “Hiiiiiiiii.”
+      </p>
+      <p>
+        I smiled so hard.
+        And I swear, I couldn’t drive off until you all left the parking lot.
+        I wanted to see you until I couldn’t anymore.
+        That’s how I knew I was already attached — quietly, deeply, and for real.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>I liked you even more after that</h2>
+      <p>
+        Meeting you didn’t make things “less real.”
+        It made it more real.
+        I went home with my heart louder than before — like it was saying:
+        “This is the person you’ve been praying for.”
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>January 14, 2026 — you said “I love you”</h2>
+      <p>
+        When you said you love me for the first time…
+        I’m not even exaggerating — it hit me deep.
+        It felt like something heavy became lighter.
+        Like Allah gave me a sign of comfort: that we’re walking toward each other, not just alone.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>What I feel</h2>
+      <p>
+        You make my heart feel safe. Even from far away, you bring me peace.
+        When I hear your voice, it’s like my worries step back for a moment…
+        and I remember what I’m working toward — a life with you that’s clean and blessed.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>What I admire about you</h2>
+      <p>
+        I admire your softness and your strength.
+        I admire your intentions.
+        I admire the way you care with your whole heart.
+        You’re the kind of person that makes me want to be better — not out of pressure,
+        but out of love and respect.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>A dua for us</h2>
+      <p>
+        Ya Allah, put barakah in what we have. Protect it from envy, from misunderstandings, from distance,
+        from anything that tries to shake it. Keep our hearts clean, keep our love halal, and guide us to a marriage
+        that brings us closer to You. Ameen.
+      </p>
+      <p>
+        <em>
+          Rabbana hab lana min azwajina wa dhurriyyatina qurrata a’yun, waj‘alna lil-muttaqina imama.
+        </em>
+        (25:74)
+      </p>
+    </section>
+
+    <!-- ✅ Voice-note page -->
+    <section class="page" id="voicePage">
+      <h2>I saved my voice for this part</h2>
+      <p>
+        Tap 🎙️ when you’re ready.
+        I want you to hear the way I mean it… not just read words on a screen.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>Future nikkah, insha’Allah</h2>
+      <p>
+        I’m excited for the day it becomes halal — when I can hold your hand without any fear,
+        when I can call you my wife with Allah as our witness.
+        I want a home with you that feels like sakinah… warmth, mercy, and peace.
+      </p>
+    </section>
+
+    <!-- ✅ Expanded promise page (respect + protection) -->
+    <section class="page">
+      <h2>What I promise you</h2>
+      <p>
+        I promise to be gentle with your heart.
+        I promise to listen — even when it’s hard — and to never turn your feelings into something small.
+        I promise to respect you in private and in public.
+      </p>
+      <p>
+        And I promise something important:
+        I will never make you feel vulnerable.
+        I will never put you in a position where you feel unprotected or unsafe with me.
+        You deserve a man who makes you feel covered — emotionally, mentally, and in every way that matters.
+      </p>
+    </section>
+
+    <section class="page">
+      <h2>Alhamdulillah</h2>
+      <p>
+        I’m grateful Allah wrote you into my life.
+        And I keep making the same dua:
+        that Allah keeps you safe, keeps you healthy, keeps your heart at ease…
+        and makes the path for us smooth until we’re together the right way.
+      </p>
+    </section>
+
+    <!-- ✅ FINAL PAGE: end-lock target -->
+    <section class="page" id="endLock" data-end-lock>
+      <h2>My ending is a dua</h2>
+      <p>
+        Ya Allah, unite us in goodness. Put love and rahmah between us.
+        Make us a comfort for each other in this dunya, and reunite us in Jannah. Ameen.
+      </p>
+      <p>— Yours forever, Z</p>
+    </section>
+
+    <footer class="endpad"></footer>
+  </main>
+
+  <!-- Audio -->
+  <audio id="music" src="assets/music.mp3" preload="auto" loop playsinline></audio>
+  <audio id="voice" src="assets/voice.mp3" preload="auto" playsinline></audio>
+
+  <script src="script.js?v=5"></script>
+</body>
+</html>
