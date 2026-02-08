@@ -44,7 +44,7 @@ html, body {
 }
 
 .page h2 {
-  font-size: clamp(34px, calc(5vw + 2px), 62px);
+  font-size: clamp(32px, calc(5vw + 2px), 60px);
   margin: 0 0 12px 0;
   letter-spacing: 0.5px;
 }
