@@ -1007,52 +1007,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Voice plays => music ducks + gate
   if (voiceBtn && voice && music) {
+    let restoring = false;
+
+    async function restoreMusic(savedVol, musicWasPlaying, iOSPausedMusic) {
+      if (restoring) return;
+      restoring = true;
+      try {
+        // resume music first if we paused it on iOS
+        if (isIOSSafari && iOSPausedMusic && musicWasPlaying) {
+          await music.play().catch(() => {});
+          music.volume = 0.01; // resume quietly then fade
+        }
+        await fadeVolume(music, savedVol, 900);
+      } finally {
+        restoring = false;
+        stopVoiceGate();
+      }
+    }
+
     voiceBtn.addEventListener("click", async () => {
       try {
         if (voiceBtn.classList.contains("disabled")) return;
 
+        // prevent spam while already playing
+        if (!voice.paused && !voice.ended) return;
+
+        // 🔒 lock scroll-down until voice finishes
         startVoiceGate();
 
-        const oldVol = Number.isFinite(music.volume) ? music.volume : 0.35;
+        // snapshot music state right before ducking
+        const savedVol = Number.isFinite(music.volume) ? music.volume : 0.35;
         const musicWasPlaying = !music.paused;
+        let iOSPausedMusic = false;
 
+        // fade music down
         await fadeVolume(music, 0.01, 650);
 
+        // iOS Safari: pause music while voice plays
         if (isIOSSafari && musicWasPlaying) {
           music.pause();
+          iOSPausedMusic = true;
         }
 
+        // IMPORTANT: bind restore ONLY for this play, ONLY on ended
+        const onEnded = () => {
+          restoreMusic(savedVol, musicWasPlaying, iOSPausedMusic).catch(() => {});
+        };
+        voice.addEventListener("ended", onEnded, { once: true });
+
+        // play voice from start
         voice.pause();
         voice.currentTime = 0;
         voice.load();
         await voice.play();
-
-        voice.onended = async () => {
-          try {
-            if (isIOSSafari && musicWasPlaying) {
-              await music.play().catch(() => {});
-              music.volume = 0.01;
-            }
-            await fadeVolume(music, oldVol, 900);
-          } finally {
-            stopVoiceGate();
-          }
-        };
       } catch (e) {
         console.log("❌ Voice failed to play:", e);
 
+        // don't trap her if it fails
         stopVoiceGate();
 
-        if (music) {
-          const restore = Number.isFinite(music.volume) ? music.volume : 0.35;
-          if (music.paused && journeyStarted) {
-            music.play().catch(() => {});
-          }
-          fadeVolume(music, Math.max(0.2, restore), 500).catch(() => {});
+        // best-effort restore (since voice didn't finish)
+        const fallbackVol = Number.isFinite(music.volume) ? music.volume : 0.35;
+        fadeVolume(music, Math.max(0.2, fallbackVol), 500).catch(() => {});
+        if (music.paused && journeyStarted) {
+          music.play().catch(() => {});
         }
       }
     });
   }
-
   console.log(`✅ Pages detected: ${TOTAL_PAGES} (current page = ${currentPage})`);
 });

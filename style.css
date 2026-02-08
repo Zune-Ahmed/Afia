@@ -44,14 +44,14 @@ html, body {
 }
 
 .page h2 {
-  font-size: clamp(30px, calc(5vw + 2px), 58px);
+  font-size: clamp(34px, calc(5vw + 2px), 62px);
   margin: 0 0 12px 0;
   letter-spacing: 0.5px;
 }
 
 .page p {
   max-width: 52ch;
-  font-size: clamp(18px, calc(2.2vw + 2px), 24px);
+  font-size: clamp(22px, calc(2.2vw + 2px), 28px);
   line-height: 1.55;
   color: var(--muted);
 }
