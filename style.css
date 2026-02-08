@@ -6,20 +6,31 @@
 }
 
 * { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+/* -------------------------------------------------
+   Background canvas (ALWAYS behind everything)
+   ------------------------------------------------- */
 #bg {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 0;
-  pointer-events: none; 
+  z-index: -3;
+  pointer-events: none;
 }
 
+/* -------------------------------------------------
+   Pages (content layer)
+   ------------------------------------------------- */
 #pages {
   position: relative;
-  z-index: 2;
+  z-index: 5;
 }
 
 .page {
@@ -29,18 +40,18 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
   flex-direction: column;
   justify-content: center;
   color: var(--text);
-  position: relative; 
+  position: relative;
 }
 
 .page h2 {
-  font-size: clamp(28px, 5vw, 56px);
+  font-size: clamp(30px, calc(5vw + 2px), 58px);
   margin: 0 0 12px 0;
   letter-spacing: 0.5px;
 }
 
 .page p {
   max-width: 52ch;
-  font-size: clamp(16px, 2.2vw, 22px);
+  font-size: clamp(18px, calc(2.2vw + 2px), 24px);
   line-height: 1.55;
   color: var(--muted);
 }
@@ -54,14 +65,17 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
 
 .endpad { height: 40vh; }
 
+/* -------------------------------------------------
+   Overlay (start screen)
+   ------------------------------------------------- */
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999; 
+  z-index: 9999;
   display: grid;
   place-items: center;
   background: rgba(0,0,0,0.75);
-  pointer-events: auto; 
+  pointer-events: auto;
 }
 
 .overlay-card {
@@ -76,8 +90,15 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
   pointer-events: auto;
 }
 
-.overlay-card h1 { margin: 0 0 8px 0; font-size: 28px; }
-.overlay-card p { margin: 0 0 14px 0; color: var(--muted); }
+.overlay-card h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+}
+
+.overlay-card p {
+  margin: 0 0 14px 0;
+  color: var(--muted);
+}
 
 .overlay-card button {
   font-size: 16px;
@@ -90,11 +111,20 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
   pointer-events: auto;
 }
 
+.tiny {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-top: 10px;
+}
+
+/* -------------------------------------------------
+   HUD buttons
+   ------------------------------------------------- */
 .hud {
   position: fixed;
   top: 14px;
   right: 14px;
-  z-index: 4;
+  z-index: 10; /* above pages + flowers */
   display: flex;
   gap: 10px;
 }
@@ -110,31 +140,28 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
   font-size: 18px;
   cursor: pointer;
 
-  display: inline-flex;        /* ✅ */
-  align-items: center;         /* ✅ */
-  justify-content: center;     /* ✅ */
-  line-height: 1;              /* ✅ */
-  padding: 0;                  /* ✅ */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
 }
 
-/* ✅ Voice button disabled state (used by JS) */
+/* Voice button disabled state (used by JS) */
 #voiceBtn.disabled {
   opacity: 0.35;
   pointer-events: none;
 }
 
-.tiny {
-  font-size: 13px;
-  opacity: 0.7;
-  margin-top: 10px;
-}
-
+/* -------------------------------------------------
+   Scroll hint
+   ------------------------------------------------- */
 .scroll-hint {
   position: fixed;
   left: 50%;
   bottom: 22px;
   transform: translateX(-50%);
-  z-index: 6;
+  z-index: 10;
 
   padding: 10px 14px;
   border-radius: 14px;
@@ -154,7 +181,14 @@ html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Seg
   animation: hintInOut 3s ease forwards;
 }
 
-/* ✅ disable scrolling until Start is tapped */
+@keyframes hintInOut {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  15%  { opacity: 1; transform: translateX(-50%) translateY(0px); }
+  85%  { opacity: 1; transform: translateX(-50%) translateY(0px); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+}
+
+/* Disable scrolling until Start is tapped */
 html.no-scroll,
 body.no-scroll {
   overflow: hidden;
@@ -163,9 +197,59 @@ body.no-scroll {
   touch-action: none;
 }
 
-@keyframes hintInOut {
-  0%   { opacity: 0; transform: translateX(-50%) translateY(10px); }
-  15%  { opacity: 1; transform: translateX(-50%) translateY(0px); }
-  85%  { opacity: 1; transform: translateX(-50%) translateY(0px); }
-  100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+/* =================================================
+   Flower background integration (safe + contained)
+   ================================================= */
+
+/* IMPORTANT:
+   flower.css contains global rules like:
+   body { display:flex; perspective: 1000px; ... }
+   We force the real page body back to normal. */
+body {
+  display: block;
+  align-items: initial;
+  justify-content: initial;
+  perspective: none;
+  overflow-x: hidden; /* keeps things clean */
+}
+
+/* Layer container */
+#flowerBg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;            /* between canvas(-3) and pages(5) */
+  pointer-events: none;   /* never blocks scroll/taps */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 600ms ease, visibility 600ms ease;
+
+  /* Contain the flower demo "body" behavior here */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 1000px;
+}
+
+#flowerBg.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* These are used by flower.css, make them relative to this layer */
+#flowerBg .night {
+  position: absolute;
+  inset: 0;
+}
+
+#flowerBg .flowers {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform: scale(0.9);
+}
+
+/* Pause animations when hidden (your HTML has not-loaded by default) */
+#flowerBg.not-loaded * {
+  animation-play-state: paused !important;
 }

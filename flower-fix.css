@@ -1,0 +1,16 @@
+body {
+  display: block;
+  align-items: initial;
+  justify-content: initial;
+  perspective: none;
+  overflow-x: hidden;
+}
+
+#flowerBg {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 1000px;
+}
+
