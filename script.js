@@ -227,6 +227,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let voiceGateActive = false;
   let voiceGateY = 0;
   let voiceGatePinning = false;
+  let voiceMustPlay = true;
+  let voiceHasPlayed = false;
+  let voiceStarted = false;
 
   let voiceGateTouchStartY = 0;
   window.addEventListener(
@@ -246,13 +249,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function startVoiceGate() {
-    voiceGateY = window.scrollY;
+    voiceGateY = computeVoiceGateY();
     voiceGateActive = true;
     pinToVoiceGate();
   }
 
   function stopVoiceGate() {
     voiceGateActive = false;
+  }
+
+  function computeVoiceGateY() {
+    if (!voicePage) return window.scrollY;
+
+    const r = voicePage.getBoundingClientRect();
+    const center = window.innerHeight * 0.5;
+
+    let y = window.scrollY + (r.top + r.height * 0.5 - center);
+
+    const doc = document.documentElement;
+    const max = Math.max(0, doc.scrollHeight - window.innerHeight);
+   y = Math.max(0, Math.min(max, y));
+
+    return y;
   }
 
   window.addEventListener(
@@ -900,6 +918,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (onVoicePage) {
           voiceBtn.style.display = "inline-flex";
           voiceBtn.classList.remove("disabled");
+
+          if (journeyStarted && voiceMustPlay && !voiceHasPlayed) {
+            startVoiceGate();
+          }
         } else {
           voiceBtn.classList.add("disabled");
           voiceBtn.style.display = "none";
@@ -909,7 +931,7 @@ document.addEventListener("DOMContentLoaded", () => {
             voice.currentTime = 0;
           }
 
-          stopVoiceGate();
+          if (voiceHasPlayed) stopVoiceGate();
 
           if (cancelMusicRamp) cancelMusicRamp();
 
@@ -984,6 +1006,7 @@ document.addEventListener("DOMContentLoaded", () => {
     voiceBtn.addEventListener("click", async () => {
       try {
         if (voiceBtn.classList.contains("disabled")) return;
+        voiceStarted = true;
 
         if (!voice.paused && !voice.ended) return;
 

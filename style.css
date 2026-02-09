@@ -225,3 +225,5 @@ body {
 #flowerBg.not-loaded * {
   animation-play-state: paused !important;
 }
+
+.spacer { height: 24px; }
