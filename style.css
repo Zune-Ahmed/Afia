@@ -13,9 +13,6 @@ html, body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
 }
 
-/* -------------------------------------------------
-   Background canvas (ALWAYS behind everything)
-   ------------------------------------------------- */
 #bg {
   position: fixed;
   inset: 0;
@@ -25,9 +22,6 @@ html, body {
   pointer-events: none;
 }
 
-/* -------------------------------------------------
-   Pages (content layer)
-   ------------------------------------------------- */
 #pages {
   position: relative;
   z-index: 5;
@@ -65,9 +59,6 @@ html, body {
 
 .endpad { height: 40vh; }
 
-/* -------------------------------------------------
-   Overlay (start screen)
-   ------------------------------------------------- */
 .overlay {
   position: fixed;
   inset: 0;
@@ -117,14 +108,11 @@ html, body {
   margin-top: 10px;
 }
 
-/* -------------------------------------------------
-   HUD buttons
-   ------------------------------------------------- */
 .hud {
   position: fixed;
   top: 14px;
   right: 14px;
-  z-index: 10; /* above pages + flowers */
+  z-index: 10; 
   display: flex;
   gap: 10px;
 }
@@ -147,15 +135,11 @@ html, body {
   padding: 0;
 }
 
-/* Voice button disabled state (used by JS) */
 #voiceBtn.disabled {
   opacity: 0.35;
   pointer-events: none;
 }
 
-/* -------------------------------------------------
-   Scroll hint
-   ------------------------------------------------- */
 .scroll-hint {
   position: fixed;
   left: 50%;
@@ -188,7 +172,6 @@ html, body {
   100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
 }
 
-/* Disable scrolling until Start is tapped */
 html.no-scroll,
 body.no-scroll {
   overflow: hidden;
@@ -197,33 +180,24 @@ body.no-scroll {
   touch-action: none;
 }
 
-/* =================================================
-   Flower background integration (safe + contained)
-   ================================================= */
 
-/* IMPORTANT:
-   flower.css contains global rules like:
-   body { display:flex; perspective: 1000px; ... }
-   We force the real page body back to normal. */
 body {
   display: block;
   align-items: initial;
   justify-content: initial;
   perspective: none;
-  overflow-x: hidden; /* keeps things clean */
+  overflow-x: hidden; 
 }
 
-/* Layer container */
 #flowerBg {
   position: fixed;
   inset: 0;
-  z-index: -2;            /* between canvas(-3) and pages(5) */
-  pointer-events: none;   /* never blocks scroll/taps */
+  z-index: -2;   
+  pointer-events: none; 
   opacity: 0;
   visibility: hidden;
   transition: opacity 600ms ease, visibility 600ms ease;
 
-  /* Contain the flower demo "body" behavior here */
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -236,7 +210,6 @@ body {
   visibility: visible;
 }
 
-/* These are used by flower.css, make them relative to this layer */
 #flowerBg .night {
   position: absolute;
   inset: 0;
@@ -249,7 +222,6 @@ body {
   transform: scale(0.9);
 }
 
-/* Pause animations when hidden (your HTML has not-loaded by default) */
 #flowerBg.not-loaded * {
   animation-play-state: paused !important;
 }

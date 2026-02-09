@@ -1,8 +1,6 @@
-// script.js
 console.log("✅ script.js loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ---------- Safe element lookups ----------
   const canvas = document.getElementById("bg");
   if (!canvas) {
     console.error("❌ canvas#bg not found");
@@ -26,23 +24,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const voicePage = document.getElementById("voicePage");
   const flowerBg = document.getElementById("flowerBg");
 
-  // ✅ Pages (used only to detect current page #)
   const pages = Array.from(document.querySelectorAll("#pages .page"));
   const TOTAL_PAGES = pages.length || 0;
 
-  // ✅ lock scrolling until Start is tapped
   let journeyStarted = false;
   if (startOverlay && startBtn) {
     document.documentElement.classList.add("no-scroll");
     document.body.classList.add("no-scroll");
   }
 
-  // ---------- Canvas sizing ----------
   let W = 0,
     H = 0,
     DPR = 1;
 
-  // ---------- Sakura forest cache ----------
   let sakuraForest = null;
   let sakuraSeed = 1337;
 
@@ -63,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", resize);
   resize();
 
-  // ---------- Flower overlay helpers ----------
   function showFlowers() {
     if (!flowerBg) return;
     flowerBg.classList.add("show");
@@ -76,17 +69,14 @@ document.addEventListener("DOMContentLoaded", () => {
     flowerBg.classList.add("not-loaded");
   }
 
-  // ---------- Current page tracking ----------
-  let currentPage = 1; // 1-based
+  let currentPage = 1;
   function sceneFromPage(p) {
-    // 1–6 stars, 7–13 sakura, 14–20 flower, 21–23 heart
     if (p >= 1 && p <= 6) return "stars";
     if (p >= 7 && p <= 13) return "sakura";
     if (p >= 14 && p <= 20) return "flower";
     return "heart";
   }
 
-  // Smoothed scene weights (so transitions don’t hard snap)
   const sceneW = { stars: 1, sakura: 0, flower: 0, heart: 0 };
   let activeScene = "stars";
 
@@ -99,7 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Observe which page is most visible
   if (pages.length > 0) {
     const pageObs = new IntersectionObserver(
       (entries) => {
@@ -114,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
           currentPage = idx + 1;
           activeScene = sceneFromPage(currentPage);
 
-          // Flowers ONLY on pages 14–20, and only after Start
           if (journeyStarted && activeScene === "flower") showFlowers();
           else hideFlowers();
         }
@@ -125,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pages.forEach((p) => pageObs.observe(p));
   }
 
-  // ---------- Pointer parallax ----------
   let pointer = { x: 0.5, y: 0.5 };
   window.addEventListener("pointermove", (e) => {
     if (W <= 0 || H <= 0) return;
@@ -133,19 +120,16 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer.y = e.clientY / H;
   });
 
-  // Scroll progress 0..1 across whole document (kept from your working setup)
   function getProgress() {
     const doc = document.documentElement;
     const max = Math.max(1, doc.scrollHeight - window.innerHeight);
     return Math.min(1, Math.max(0, window.scrollY / max));
   }
 
-  // Helpers
   function lerp(a, b, t) {
     return a + (b - a) * t;
   }
 
-  // ---------- Background elements ----------
   const stars = Array.from({ length: 220 }, () => ({
     x: Math.random(),
     y: Math.random(),
@@ -185,9 +169,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // ----------------------------
-  // ✅ Smooth volume ramp
-  // ----------------------------
   let cancelMusicRamp = null;
 
   function rampVolume(audioEl, target, ms = 700) {
@@ -243,7 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return isIOS && isSafari;
   })();
 
-  // ✅ VOICE GATE
   let voiceGateActive = false;
   let voiceGateY = 0;
   let voiceGatePinning = false;
@@ -319,7 +299,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("touchmove", blockDownInputsWhileVoice, { passive: false });
   window.addEventListener("keydown", blockDownInputsWhileVoice, { passive: false });
 
-  // ---------- Sakura forest ----------
   function mulberry32(seed) {
     return function () {
       let t = (seed += 0x6d2b79f5);
@@ -558,7 +537,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.globalAlpha = 1;
   }
 
-  // ---------- ❤️ Smooth beating heart ----------
   function drawBeatingHeart(amount, t) {
     if (amount <= 0.001) return;
 
@@ -619,7 +597,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.restore();
   }
 
-  // ---------- ✅ END LOCK (kept from your working system) ----------
   const endLockEl =
     document.getElementById("endLock") || document.querySelector("[data-end-lock]") || null;
 
@@ -728,9 +705,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("⚠️ endLock element not found. Add id='endLock' to last section.");
   }
 
-  // ---------- Background draw (kept working style, only swapped mode logic) ----------
   function drawBackground(p, t) {
-    // Update weights based on current page → smooth transitions
     stepSceneWeights(activeScene, 0.12);
 
     const starsOn = sceneW.stars;
@@ -738,10 +713,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const flowerOn = sceneW.flower;
     const heartOn = sceneW.heart;
 
-    // Base gradient (keeps background always alive)
     const g = ctx.createLinearGradient(0, 0, 0, H);
 
-    // shift warmer during flower/heart, cooler during stars/sakura
     const warmMix = Math.min(1, 0.75 * flowerOn + 0.9 * heartOn);
     const topR = Math.floor(4 + 26 * warmMix);
     const topG = Math.floor(8 + 22 * warmMix);
@@ -757,7 +730,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
-    // ⭐ Stars (pages 1–6)
     if (starsOn > 0.001) {
       for (const s of stars) {
         const tw = 0.55 + 0.45 * Math.sin(t * 0.001 * s.tw + s.x * 10);
@@ -784,7 +756,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // ⭐ Shooting stars (only during stars section)
     if (starsOn > 0.001) {
       const dt = Math.min(0.05, (t - (drawBackground._lastT || t)) / 1000);
       drawBackground._lastT = t;
@@ -854,11 +825,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // 🌸 Sakura forest + petals (pages 7–13)
     if (sakuraOn > 0.001) {
       drawSakuraForest(sakuraOn, t);
 
-      // petals
       for (const f of petals) {
         const drift = t * 0.00005 * (0.6 + f.w);
         const x = ((f.x + drift) % 1) * W;
@@ -880,16 +849,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // 🌺 Flower section (pages 14–20)
-    // Canvas stays calm; DOM overlay does the heavy visuals.
-    // (Flower overlay show/hide is handled by the page observer above.)
-
-    // ❤️ Heart (pages 21–23)
     if (heartOn > 0.001) {
       drawBeatingHeart(heartOn, t);
     }
 
-    // Vignette
     const vg = ctx.createRadialGradient(
       W / 2,
       H / 2,
@@ -911,7 +874,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   requestAnimationFrame(loop);
 
-  // ---- Scroll hint helpers ----
   function showScrollHint() {
     if (!scrollHint) return;
     scrollHint.classList.remove("show");
@@ -925,7 +887,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ Only show 🎙️ on voice page
   if (voiceBtn) {
     voiceBtn.classList.add("disabled");
     voiceBtn.style.display = "none";
@@ -963,20 +924,17 @@ document.addEventListener("DOMContentLoaded", () => {
     obs.observe(voicePage);
   }
 
-  // ---- Audio controls ----
   if (startBtn && startOverlay && music) {
     startBtn.addEventListener("click", async () => {
       console.log("✅ Start button clicked");
 
       journeyStarted = true;
 
-      // Hide overlay immediately
       startOverlay.style.display = "none";
       document.documentElement.classList.remove("no-scroll");
       document.body.classList.remove("no-scroll");
       showScrollHint();
 
-      // Apply flower visibility immediately after start
       if (activeScene === "flower") showFlowers();
       else hideFlowers();
 
@@ -1005,7 +963,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Voice plays => music ducks + gate
   if (voiceBtn && voice && music) {
     let restoring = false;
 
@@ -1013,10 +970,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (restoring) return;
       restoring = true;
       try {
-        // resume music first if we paused it on iOS
         if (isIOSSafari && iOSPausedMusic && musicWasPlaying) {
           await music.play().catch(() => {});
-          music.volume = 0.01; // resume quietly then fade
+          music.volume = 0.01; 
         }
         await fadeVolume(music, savedVol, 900);
       } finally {
@@ -1029,33 +985,26 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         if (voiceBtn.classList.contains("disabled")) return;
 
-        // prevent spam while already playing
         if (!voice.paused && !voice.ended) return;
 
-        // 🔒 lock scroll-down until voice finishes
         startVoiceGate();
 
-        // snapshot music state right before ducking
         const savedVol = Number.isFinite(music.volume) ? music.volume : 0.35;
         const musicWasPlaying = !music.paused;
         let iOSPausedMusic = false;
 
-        // fade music down
         await fadeVolume(music, 0.01, 650);
 
-        // iOS Safari: pause music while voice plays
         if (isIOSSafari && musicWasPlaying) {
           music.pause();
           iOSPausedMusic = true;
         }
 
-        // IMPORTANT: bind restore ONLY for this play, ONLY on ended
         const onEnded = () => {
           restoreMusic(savedVol, musicWasPlaying, iOSPausedMusic).catch(() => {});
         };
         voice.addEventListener("ended", onEnded, { once: true });
 
-        // play voice from start
         voice.pause();
         voice.currentTime = 0;
         voice.load();
@@ -1063,10 +1012,8 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (e) {
         console.log("❌ Voice failed to play:", e);
 
-        // don't trap her if it fails
         stopVoiceGate();
 
-        // best-effort restore (since voice didn't finish)
         const fallbackVol = Number.isFinite(music.volume) ? music.volume : 0.35;
         fadeVolume(music, Math.max(0.2, fallbackVol), 500).catch(() => {});
         if (music.paused && journeyStarted) {
